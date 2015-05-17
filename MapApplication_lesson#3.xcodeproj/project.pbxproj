@@ -10,6 +10,10 @@
 		7C6642581B03FAAC006B3B23 /* RedButtonDefault.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C6642571B03FAAC006B3B23 /* RedButtonDefault.png */; };
 		7C66425A1B03FAC3006B3B23 /* masageIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C6642591B03FAC3006B3B23 /* masageIcon.png */; };
 		7C6642731B0549F1006B3B23 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6642721B0549F1006B3B23 /* CustomTableViewCell.m */; };
+		7CF017BB1B0804760020A6ED /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017BA1B0804760020A6ED /* Object.m */; };
+		7CF017BE1B0811AE0020A6ED /* ViewControllerTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017BD1B0811AE0020A6ED /* ViewControllerTwo.m */; };
+		7CF017C11B0811C40020A6ED /* ViewControllerThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017C01B0811C40020A6ED /* ViewControllerThree.m */; };
+		7CF017CA1B089D450020A6ED /* SingleTone.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017C91B089D450020A6ED /* SingleTone.m */; };
 		7CF21BC61B02937800150EAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF21BC51B02937800150EAA /* main.m */; };
 		7CF21BC91B02937800150EAA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF21BC81B02937800150EAA /* AppDelegate.m */; };
 		7CF21BCC1B02937800150EAA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF21BCB1B02937800150EAA /* ViewController.m */; };
@@ -36,6 +40,14 @@
 		7C6642591B03FAC3006B3B23 /* masageIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = masageIcon.png; sourceTree = "<group>"; };
 		7C6642711B0549F1006B3B23 /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
 		7C6642721B0549F1006B3B23 /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
+		7CF017B91B0804750020A6ED /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
+		7CF017BA1B0804760020A6ED /* Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Object.m; sourceTree = "<group>"; };
+		7CF017BC1B0811AE0020A6ED /* ViewControllerTwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewControllerTwo.h; sourceTree = "<group>"; };
+		7CF017BD1B0811AE0020A6ED /* ViewControllerTwo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerTwo.m; sourceTree = "<group>"; };
+		7CF017BF1B0811C40020A6ED /* ViewControllerThree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewControllerThree.h; sourceTree = "<group>"; };
+		7CF017C01B0811C40020A6ED /* ViewControllerThree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerThree.m; sourceTree = "<group>"; };
+		7CF017C81B089D450020A6ED /* SingleTone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleTone.h; sourceTree = "<group>"; };
+		7CF017C91B089D450020A6ED /* SingleTone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleTone.m; sourceTree = "<group>"; };
 		7CF21BC01B02937800150EAA /* MapApplication_lesson#3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MapApplication_lesson#3.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CF21BC41B02937800150EAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CF21BC51B02937800150EAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -94,6 +106,10 @@
 		7CF21BB71B02937800150EAA = {
 			isa = PBXGroup;
 			children = (
+				7CF017C81B089D450020A6ED /* SingleTone.h */,
+				7CF017C91B089D450020A6ED /* SingleTone.m */,
+				7CF017B91B0804750020A6ED /* Object.h */,
+				7CF017BA1B0804760020A6ED /* Object.m */,
 				7C6642591B03FAC3006B3B23 /* masageIcon.png */,
 				7C6642571B03FAAC006B3B23 /* RedButtonDefault.png */,
 				7CF21BC21B02937800150EAA /* MapApplication_lesson#3 */,
@@ -121,6 +137,10 @@
 				7CF21BCA1B02937800150EAA /* ViewController.h */,
 				7CF21BCB1B02937800150EAA /* ViewController.m */,
 				7CF21BCD1B02937800150EAA /* Main.storyboard */,
+				7CF017BC1B0811AE0020A6ED /* ViewControllerTwo.h */,
+				7CF017BD1B0811AE0020A6ED /* ViewControllerTwo.m */,
+				7CF017BF1B0811C40020A6ED /* ViewControllerThree.h */,
+				7CF017C01B0811C40020A6ED /* ViewControllerThree.m */,
 				7CF21BD01B02937800150EAA /* Images.xcassets */,
 				7CF21BD21B02937800150EAA /* LaunchScreen.xib */,
 				7CF21BC31B02937800150EAA /* Supporting Files */,
@@ -259,7 +279,11 @@
 				7CF21BCC1B02937800150EAA /* ViewController.m in Sources */,
 				7CF21BC91B02937800150EAA /* AppDelegate.m in Sources */,
 				7C6642731B0549F1006B3B23 /* CustomTableViewCell.m in Sources */,
+				7CF017BE1B0811AE0020A6ED /* ViewControllerTwo.m in Sources */,
+				7CF017BB1B0804760020A6ED /* Object.m in Sources */,
+				7CF017C11B0811C40020A6ED /* ViewControllerThree.m in Sources */,
 				7CF21BC61B02937800150EAA /* main.m in Sources */,
+				7CF017CA1B089D450020A6ED /* SingleTone.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

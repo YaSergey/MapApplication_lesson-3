@@ -15,6 +15,7 @@
 
 
 
+
 BOOL isCurrentLocation;
 
 
@@ -25,11 +26,19 @@ BOOL isCurrentLocation;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic, strong) CLLocationManager * locationManager;
-@property (nonatomic, strong) NSMutableArray* arrayAddress;
+//@property (nonatomic, strong) NSMutableArray* arrayAddressOld;
+@property (nonatomic, strong) NSMutableArray* makeAddressArray;
+
 
 - (IBAction)handleLongPress:(UILongPressGestureRecognizer *)sender;
 - (IBAction)clearTableView:(id)sender;
 - (IBAction)savePoint:(id)sender;
+- (IBAction)nextViewFirst:(id)sender;
+
+
+
+- (IBAction)nextViewOne:(id)sender;
+
 
 @end
 
@@ -44,16 +53,22 @@ BOOL isCurrentLocation;
         [self.locationManager requestAlwaysAuthorization];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FirstLunch"];
     }
-
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    SingleTone *addressArrayVar = [SingleTone sharedSingleTone];
+
+    [addressArrayVar makeAddressArray];
+
   
     isCurrentLocation = NO;
     
-    self.arrayAddress = [[NSMutableArray alloc]init];
+//  self.arrayAddressOld = [[NSMutableArray alloc]init];
 
+//    self.makeAddressArray = [[NSMutableArray alloc] init];
+    
     self.mapView.showsUserLocation = YES; // показывать местоположение пользователя
     self.locationManager = [[CLLocationManager alloc] init]; // отслеживание текущего местоположения
     self.locationManager.delegate = self;
@@ -64,7 +79,6 @@ BOOL isCurrentLocation;
     if (!isFirstLunch) {
         [self firstLunch];
     }
-    
 }
 
 
@@ -82,8 +96,8 @@ BOOL isCurrentLocation;
 
 - (void) setupMapView: (CLLocationCoordinate2D) coord {
     
-    // карта из общего вида опустится когда до пользователя будет 500м
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, 500, 500);
+    // карта из общего вида опустится когда до пользователя будет 1500м
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, 1500, 1500);
 
     [self.mapView setRegion:region animated:YES];
 
@@ -99,10 +113,8 @@ BOOL isCurrentLocation;
         annView.image = [UIImage imageNamed:@"RedButtonDefault.png"];
         // присваиваем маркеру на карте кастомный маркер
         
-        
         [annView addSubview:[self getCallOutView:annotation.title]];
         return annView;
-        
     }
     return nil;
 }
@@ -132,7 +144,6 @@ BOOL isCurrentLocation;
     [callView addSubview:label];
     
     return callView;
-  
 }
 
 
@@ -157,10 +168,7 @@ BOOL isCurrentLocation;
         }
     }
 
-
-
 #pragma mark CLLocationManagerDelegate
-
 
 // метод работает тогда когда позиция изменилась, соответсвенно выдает новую и старую локацию
 
@@ -173,7 +181,6 @@ BOOL isCurrentLocation;
         
         [self setupMapView:newLocation.coordinate];
     }
-
 }
 
 
@@ -199,7 +206,6 @@ BOOL isCurrentLocation;
 //            NSLog(@"place %@", place.addressDictionary); // и выводим их в консоль
             
             
-            
         NSString * addressString = [NSString stringWithFormat:
              @"Город - %@\nУлица - %@\nИндекс - %@",
         [place.addressDictionary valueForKey:@"City"],
@@ -208,34 +214,36 @@ BOOL isCurrentLocation;
             
             NSLog(@"addressString %@", addressString);
             
-//            NSLog(@"onlyCity %@", [NSString stringWithFormat: [place.addressDictionary valueForKey:@"Street"]]);
+//         NSLog(@"onlyCity %@", [NSString stringWithFormat: [place.addressDictionary valueForKey:@"Street"]]);
 // вызываем сообщение на экране
 
-//            UIAlertView * alert =   [[UIAlertView alloc] initWithTitle: @"Address" message:addressString delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
+            UIAlertView * alert =   [[UIAlertView alloc] initWithTitle: @"Address" message:addressString delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
 
-//            [alert show];
-            
+            [alert show];
             
             MKPointAnnotation * annotation = [[MKPointAnnotation alloc] init];
             annotation.title = addressString;
             annotation.coordinate = coordScreenPoint;
             
-            // добавление аннотации на карту
+    // добавление аннотации на карту
             [self.mapView addAnnotation:annotation];
 
             
-            // дОбавляем данные после срабатывания метода в массив, а потом в таблицу
+    // добавляем данные после срабатывания метода в массив, а потом в таблицу
             
             NSMutableDictionary * addressDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
             [place.addressDictionary valueForKey:@"City"], @"City",
             [place.addressDictionary valueForKey:@"Street"], @"Street",
             [place.addressDictionary valueForKey:@"ZIP"], @"ZIP",tapLocation, @"location", nil];
             
-            
-            [self.arrayAddress addObject: addressDict];
+            [self.makeAddressArray addObject: addressDict];
         
+        /*
+        [sing1 makeAddressArray];
+        [sing1.addressArray addObject:@"Array string sing3"];
+        */
         
-            NSLog(@"arrayAdress %@", self.arrayAddress);
+            NSLog(@"makeAddressArray %@", self.makeAddressArray);
             
         }];
         
@@ -255,10 +263,9 @@ BOOL isCurrentLocation;
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.arrayAddress.count;
+    return self.makeAddressArray.count;
     
 }
-
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -266,11 +273,11 @@ BOOL isCurrentLocation;
     CustomTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:simpleTaibleIndefir];
     
     cell.cityLabel.text =
-    [[self.arrayAddress objectAtIndex:indexPath.row]objectForKey:@"City"];
+    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"City"];
     cell.streetLabel.text =
-    [[self.arrayAddress objectAtIndex:indexPath.row]objectForKey:@"Street"];
+    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"Street"];
     cell.zipCodeLabel.text =
-    [[self.arrayAddress objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
+    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
     
     return cell;
     
@@ -304,20 +311,38 @@ BOOL isCurrentLocation;
 
 - (IBAction)savePoint:(id)sender {
     
-    [self reloadTableView];
+    [self reloadTableView]; // добавление выбрранного поинта в таблицу, путем перезагрузки таблицы
 
+}
+
+- (IBAction)nextViewFirst:(id)sender {
+    
+//    SingleTone * sing = [SingleTone sharedSingleTone];
+//    sing.someString = @"SomeValue";
+    
+}
+
+//  переход на второй ViewController
+- (IBAction)nextViewOne:(id)sender {
+    
+    ViewControllerTwo * controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewTwo"];
+    controller.someString = @"Some Value999";
+    // передаем значение NsString во второй вьюконтроллер, здесь может передаваться картинка массив дикшинари и т/п/
+
+    [self.navigationController pushViewController:controller animated: YES];
+    
 }
 
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //по индексу ячейки находим координаты в массиве self.arrayAdress и устанавливаем данные координаты по центру карты
-    NSDictionary * dict = [self.arrayAddress objectAtIndex:indexPath.row];
+    //по индексу ячейки находим координаты в массиве self.makeAddressArray и устанавливаем данные координаты по центру карты
+    NSDictionary * dict = [self.makeAddressArray objectAtIndex:indexPath.row];
     CLLocation * newLocation = [[CLLocation alloc] init];
     newLocation = [dict objectForKey:@"location"];
     [self setupMapView:newLocation.coordinate];
     
-    
+
 }
 
 

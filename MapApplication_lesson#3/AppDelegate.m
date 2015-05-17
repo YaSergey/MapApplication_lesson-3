@@ -8,7 +8,17 @@
 
 #import "AppDelegate.h"
 
+typedef void (^GlobalBlock)(void);
+
+
+#define Text @"большой текст который предназанчен для описания большого текста при програмировании"
+
+
+
 @interface AppDelegate ()
+
+@property (copy,  nonatomic) GlobalBlock propertyBlock;
+
 
 @end
 
@@ -17,7 +27,117 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+ 
+/*    void(^blockName)(void);
+    
+    blockName = ^ {
+        NSLog(@"blockName");
+    
+    };
+    
+
+    
+    blockName();
+    [self method1];
+    [self method2];
+    [self method3];
+
+    
+    
+    NSString * (^blockWithArguments)(NSString *) = ^ (NSString *string) {
+    [self methodWithArguments:@"Test"];
+        
+        
+    return [NSString stringWithFormat:@"blockWithArguments@%", string];
+    };
+    
+    blockWithArguments (@"Block String");
+    
+  [self methodWithArguments:@"Test"];
+  
+    NSString * str = [self methodWithArguments:@"Test"];
+    NSString * strBlock = blockWithArguments(@"Block String");
+
+    NSLog(@"str %@", str);
+    NSLog(@"str %@", strBlock);
+    
+
+    
+   __block NSString * string  = @"Test";
+    
+    [self methodWithBlockArgument:^{
+        NSLog(@"string %@", string);
+        
+        string = @"Block Test";
+        
+    }];
+    
+    NSLog(@"string %@", string);
+
+    
+//    GlobalBlock test = ^ (NSString * str, int i, NSArray * array){
+    
+    
+    };
+
+//    test (@"test", 111, @[@"2222", @"ddff"]);
+
+  */
+    
+    Object * sometingNameOfBlock = [Object new];
+    
+    sometingNameOfBlock.name = @"object";
+
+    
+    self.propertyBlock = ^ {
+        
+        NSLog(@"Object %@", sometingNameOfBlock.name);
+    };
+    
+    self.propertyBlock ();
+    
+
+    
     return YES;
+
+}
+
+
+
+
+
+- (void) method1 {
+    NSLog(@"metod1 =");
+
+}
+
+- (void) method2 {
+    NSLog(@"metod2 =");
+    
+}
+
+- (void) method3 {
+    NSLog(@"metod3 =");
+    
+}
+
+
+- (NSString *) methodWithArguments: (NSString *) string {
+    
+//    NSLog(@"methodWithArguments %@", string);
+
+
+    return [NSString stringWithFormat:@"methodWithArguments%@", string];
+    
+}
+
+- (void) methodWithBlockArgument: (void (^) (void)) blockArgument {
+    
+
+    blockArgument();
+    
+
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

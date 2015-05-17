@@ -11,13 +11,13 @@
 #import <CoreLocation/CoreLocation.h>
 #import "CustomTableViewCell.h"
 
+#import "ViewControllerTwo.h"
+
+#import "SingleTone.h"
+
+
 
 @interface ViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource>
-
-
-
-@property (nonatomic, strong) NSMutableArray * arrayMainMutable;
-
 
 
 
