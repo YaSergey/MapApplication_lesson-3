@@ -15,5 +15,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *streetLabel;
 @property (weak, nonatomic) IBOutlet UILabel *zipCodeLabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *zipCodeLabel2;
+@property (weak, nonatomic) IBOutlet UILabel *cityLabel2;
+@property (weak, nonatomic) IBOutlet UILabel *streetLabel2;
 
 @end

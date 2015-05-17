@@ -10,11 +10,14 @@
 #import <MapKit/MapKit.h>
 
 #import "SingleTone.h"
+#import "CustomTableViewCell.h"
+
 
 
 @interface ViewControllerTwo : UIViewController
 
 @property (nonatomic, strong) NSString * someString;
+
 
 
 @end

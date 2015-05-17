@@ -15,7 +15,6 @@
 @property (nonatomic, weak) NSString * someString;
 @property (nonatomic, strong) NSMutableArray * addressArray;
 
-- (void) makeAddressArray;
 
 
 @end

@@ -26,15 +26,12 @@ BOOL isCurrentLocation;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic, strong) CLLocationManager * locationManager;
-//@property (nonatomic, strong) NSMutableArray* arrayAddressOld;
-@property (nonatomic, strong) NSMutableArray* makeAddressArray;
+@property (nonatomic, strong) NSMutableArray* addressArray;
 
 
 - (IBAction)handleLongPress:(UILongPressGestureRecognizer *)sender;
 - (IBAction)clearTableView:(id)sender;
 - (IBAction)savePoint:(id)sender;
-- (IBAction)nextViewFirst:(id)sender;
-
 
 
 - (IBAction)nextViewOne:(id)sender;
@@ -58,16 +55,15 @@ BOOL isCurrentLocation;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    SingleTone *addressArrayVar = [SingleTone sharedSingleTone];
-
-    [addressArrayVar makeAddressArray];
+//    SingleTone *addressArrayVar = [SingleTone sharedSingleTone];
+//
+//    [addressArrayVar makeAddressArray];
 
   
     isCurrentLocation = NO;
     
-//  self.arrayAddressOld = [[NSMutableArray alloc]init];
 
-//    self.makeAddressArray = [[NSMutableArray alloc] init];
+    self.addressArray = [[NSMutableArray alloc] init];
     
     self.mapView.showsUserLocation = YES; // показывать местоположение пользователя
     self.locationManager = [[CLLocationManager alloc] init]; // отслеживание текущего местоположения
@@ -203,7 +199,7 @@ BOOL isCurrentLocation;
             
             CLPlacemark * place = [placemarks objectAtIndex:0];
             
-//            NSLog(@"place %@", place.addressDictionary); // и выводим их в консоль
+//  NSLog(@"place %@", place.addressDictionary); // и выводим их в консоль
             
             
         NSString * addressString = [NSString stringWithFormat:
@@ -236,14 +232,16 @@ BOOL isCurrentLocation;
             [place.addressDictionary valueForKey:@"Street"], @"Street",
             [place.addressDictionary valueForKey:@"ZIP"], @"ZIP",tapLocation, @"location", nil];
             
-            [self.makeAddressArray addObject: addressDict];
+            [self.addressArray addObject: addressDict];
         
+//            SingleTone * sing = [SingleTone sharedSingleTone];
+//            sing.addressArray = self.addressArray;
         /*
         [sing1 makeAddressArray];
         [sing1.addressArray addObject:@"Array string sing3"];
         */
         
-            NSLog(@"makeAddressArray %@", self.makeAddressArray);
+            NSLog(@"makeAddressArray %@", self.addressArray);
             
         }];
         
@@ -263,7 +261,7 @@ BOOL isCurrentLocation;
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.makeAddressArray.count;
+    return self.addressArray.count;
     
 }
 
@@ -273,11 +271,11 @@ BOOL isCurrentLocation;
     CustomTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:simpleTaibleIndefir];
     
     cell.cityLabel.text =
-    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"City"];
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"City"];
     cell.streetLabel.text =
-    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"Street"];
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"Street"];
     cell.zipCodeLabel.text =
-    [[self.makeAddressArray objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
     
     return cell;
     
@@ -315,18 +313,16 @@ BOOL isCurrentLocation;
 
 }
 
-- (IBAction)nextViewFirst:(id)sender {
-    
-//    SingleTone * sing = [SingleTone sharedSingleTone];
-//    sing.someString = @"SomeValue";
-    
-}
 
 //  переход на второй ViewController
 - (IBAction)nextViewOne:(id)sender {
     
+    SingleTone * sing = [SingleTone sharedSingleTone];
+    sing.addressArray = self.addressArray;
+    
     ViewControllerTwo * controller = [self.storyboard instantiateViewControllerWithIdentifier:@"ViewTwo"];
-    controller.someString = @"Some Value999";
+    
+//    controller.someString = @"Some Value999";
     // передаем значение NsString во второй вьюконтроллер, здесь может передаваться картинка массив дикшинари и т/п/
 
     [self.navigationController pushViewController:controller animated: YES];
@@ -337,7 +333,7 @@ BOOL isCurrentLocation;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //по индексу ячейки находим координаты в массиве self.makeAddressArray и устанавливаем данные координаты по центру карты
-    NSDictionary * dict = [self.makeAddressArray objectAtIndex:indexPath.row];
+    NSDictionary * dict = [self.addressArray objectAtIndex:indexPath.row];
     CLLocation * newLocation = [[CLLocation alloc] init];
     newLocation = [dict objectForKey:@"location"];
     [self setupMapView:newLocation.coordinate];

@@ -9,18 +9,20 @@
 #import "ViewControllerTwo.h"
 #import "Object.h"
 
+BOOL isCurrentLocation;
+
 
 @interface ViewControllerTwo ()
-@property (weak, nonatomic) IBOutlet MKMapView *mapViewTwo;
-
-@property (weak, nonatomic) IBOutlet UIButton *nextViewSecond;
-
-@property (weak, nonatomic) IBOutlet UILabel *textLabelTwo;
-
-@property (nonatomic, strong) NSMutableArray* makeAddressArray;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 
-- (IBAction)nextVeiwTwo:(id)sender;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+
+@property (nonatomic, strong) NSMutableArray* addressArray;
+
+@property (nonatomic, strong) CLLocationManager * locationManager;
+
+
 
 - (IBAction)addObjectToSecondMap:(id)sender;
 
@@ -31,54 +33,174 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.makeAddressArray = [[NSMutableArray alloc] init];
-
+    isCurrentLocation = NO;
+    
+    self.mapView.showsUserLocation = YES;
+    self.locationManager = [[CLLocationManager alloc]init];
+    self.locationManager.delegate = self;
+    
     
     SingleTone * sing = [SingleTone sharedSingleTone];
-    
+    self.addressArray = sing.addressArray;
+
+   
+
+/*
     NSLog(@"someString ViewControllerTwo%@", sing.someString);
 
     self.textLabelTwo.text = self.someString;
-    
 
     sing.someString = @"Какая то другая новая строка";
-    
-    
+*/
+}
 
-    Object * obj1 = [Object new];
-    Object * obj2 = [Object new];
-    Object * obj3 = [Object new];
+#pragma mark MKMapViewDelegate
 
-    obj1.name = @"obj1";
-    obj2.name = @"obj2";
-    obj3.name = @"obj3";
+// метод позволяет показывать карту после того как она полностью загрузится
 
+- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered {
     
-    SingleTone *sing1 = [SingleTone sharedSingleTone];
-    SingleTone *sing2 = [SingleTone sharedSingleTone];
-    SingleTone *sing3 = [SingleTone sharedSingleTone];
+    if (fullyRendered) {
+        [self.locationManager startUpdatingLocation];
+        // обновляем локализацию после того как карта загружена
+    }
+}
 
-//    инициализация массива
-    [sing1 makeAddressArray];
-    [sing1.addressArray addObject:@"Array string sing3"];
+- (void) setupMapView: (CLLocationCoordinate2D) coord {
     
+    // карта из общего вида опустится когда до пользователя будет 1500м
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, 1500, 1500);
     
-//    sing1.someString = @"sing1";
-//    sing2.someString = @"sing2";
-//    sing3.someString = @"sing3";
-    
-    NSLog(@"obj1 - %@", obj1.name);
-    NSLog(@"obj2 - %@", obj2.name);
-    NSLog(@"obj3 - %@", obj3.name);
-    
-    NSLog(@"obj1 - %@", sing1.someString);
-    NSLog(@"obj2 - %@", sing2.someString);
-    NSLog(@"obj3 - %@", sing3.someString);
-
-
-
+    [self.mapView setRegion:region animated:YES];
     
 }
+
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    
+    if (![annotation isKindOfClass:MKUserLocation.class]) {
+        MKAnnotationView * annView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Annotation"];
+        
+        annView.canShowCallout = NO;
+        annView.image = [UIImage imageNamed:@"RedButtonDefault.png"];
+        // присваиваем маркеру на карте кастомный маркер
+        
+        [annView addSubview:[self getCallOutView:annotation.title]];
+        return annView;
+    }
+    return nil;
+}
+
+- (UIView *) getCallOutView: (NSString *) title {
+    
+    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 150, 50)];
+    callView.backgroundColor = [UIColor orangeColor];
+    
+    callView.tag = 1000;
+    callView.alpha = 0.8;
+    callView.layer.borderWidth = 0.5; // оконтовка callView
+    //    callView.layer.shadowOpacity = [UIColor lightGrayColor];
+    callView.layer.cornerRadius = 10.0;
+    
+    
+    
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(1, 1, 150, 90)];
+    
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.textAlignment = NSTextAlignmentNatural;
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont fontWithName: @"Optima" size: 12.0];
+    label.text = title;
+    
+    [callView addSubview:label];
+    
+    return callView;
+}
+
+
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    // метод анимации при нажатии на вью - показывает (меняем альфу до 1)
+    if (! [view.annotation isKindOfClass:MKUserLocation.class]) {
+        for (UIView * subView in view.subviews) {
+            if (subView.tag == 1000) {
+                subView.alpha = 1.0;
+            }
+        }
+    }
+    
+}
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+    
+    // метод анимации при нажатии на вью - скрываем (меняем альфу до 0)
+    for (UIView * subView in view.subviews) {
+        if (subView.tag == 1000) {
+            subView.alpha = 0.0;
+        }
+    }
+}
+
+#pragma mark CLLocationManagerDelegate
+
+// метод работает тогда когда позиция изменилась, соответсвенно выдает новую и старую локацию
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+    
+    if (!isCurrentLocation) { // если локация изменилась
+        isCurrentLocation = YES; // то возвращаем текущую локацию
+        
+        [self setupMapView:newLocation.coordinate];
+    }
+}
+
+#pragma mark UITableViewDataSource
+
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.addressArray.count;
+    
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString * simpleTaibleIndefir = @"Cell2";
+    CustomTableViewCell * cell2 = [tableView dequeueReusableCellWithIdentifier:simpleTaibleIndefir];
+    
+    cell2.cityLabel2.text =
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"City"];
+    cell2.streetLabel2.text =
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"Street"];
+    cell2.zipCodeLabel2.text =
+    [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
+    
+    return cell2;
+    
+}
+
+//метод редактирования таблицы
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+
+- (void) reloadTableView {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    });
+}
+
+- (void) removeAllAnnotations { //метод убирает аннотации с карты
+    id userAnnotation = self.mapView.userLocation;
+    NSMutableArray*annotations = [NSMutableArray arrayWithArray:self.mapView.annotations];
+    [annotations removeObject:userAnnotation];
+    [self.mapView removeAnnotations:annotations];
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -110,6 +232,11 @@
 
 - (IBAction)addObjectToSecondMap:(id)sender {
     
-    NSLog(@".Second View !!! makeAddressArray %lu", (unsigned long)self.makeAddressArray.count);
+   
+    
+    
+    
+    
+    NSLog(@".Second View !!! makeAddressArray %lu", (unsigned long)self.addressArray);
 }
 @end

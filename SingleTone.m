@@ -20,7 +20,7 @@
     dispatch_once (&onceToken, ^ {
     
         singleToneObject = [[self alloc] init];
-        
+        singleToneObject.addressArray = [[NSMutableArray alloc] init];
         
     });
     
@@ -29,10 +29,4 @@
 }
 
 
-- (void) makeAddressArray {
-
-    self.addressArray = [[NSMutableArray alloc] init];
-
-
-}
 @end
