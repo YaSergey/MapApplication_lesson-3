@@ -22,11 +22,13 @@ BOOL isCurrentLocation;
 @interface ViewController ()
 
 
-
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (nonatomic, strong) CLLocationManager * locationManager;
 @property (nonatomic, strong) NSMutableArray* addressArray;
+
+//@property (nonatomic, weak) UIView *imageAnnotation;
+//@property (nonatomic, weak) UIImageView *avatarImage;
 
 
 - (IBAction)handleLongPress:(UILongPressGestureRecognizer *)sender;
@@ -117,18 +119,18 @@ BOOL isCurrentLocation;
 
 - (UIView *) getCallOutView: (NSString *) title {
 
-    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 150, 50)];
+    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 180, 50)];
     callView.backgroundColor = [UIColor orangeColor];
     
     callView.tag = 1000;
     callView.alpha = 0.8;
     callView.layer.borderWidth = 0.5; // оконтовка callView
 //    callView.layer.shadowOpacity = [UIColor lightGrayColor];
-    callView.layer.cornerRadius = 10.0;
+    callView.layer.cornerRadius = 25.0;
     
     
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(1, 1, 150, 90)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(46, 1, 140, 45)];
     
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
@@ -139,6 +141,25 @@ BOOL isCurrentLocation;
     
     [callView addSubview:label];
     
+    
+    // добавление аватарки на аннотацию =============
+    
+    
+    UIImage * avatarImage = [UIImage imageNamed:@"blueEyes.jpg"];
+
+
+    UIImageView * imageAnnotation = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
+    
+    imageAnnotation.image = avatarImage;
+    
+    // скругление аватарки
+    imageAnnotation.layer.cornerRadius = imageAnnotation.frame.size.width / 2;
+    imageAnnotation.clipsToBounds = YES;
+    
+    [callView addSubview:imageAnnotation];
+    
+    
+
     return callView;
 }
 

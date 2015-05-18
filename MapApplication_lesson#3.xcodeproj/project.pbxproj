@@ -11,6 +11,7 @@
 		7C66425A1B03FAC3006B3B23 /* masageIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7C6642591B03FAC3006B3B23 /* masageIcon.png */; };
 		7C6642731B0549F1006B3B23 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C6642721B0549F1006B3B23 /* CustomTableViewCell.m */; };
 		7CB48CA71B09502A00477F2B /* CustomCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CB48CA61B09502A00477F2B /* CustomCell2.m */; };
+		7CF00FE11B0A6B3600104570 /* blueEyes.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7CF00FE01B0A6B3600104570 /* blueEyes.jpg */; };
 		7CF017BB1B0804760020A6ED /* Object.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017BA1B0804760020A6ED /* Object.m */; };
 		7CF017BE1B0811AE0020A6ED /* ViewControllerTwo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017BD1B0811AE0020A6ED /* ViewControllerTwo.m */; };
 		7CF017C11B0811C40020A6ED /* ViewControllerThree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CF017C01B0811C40020A6ED /* ViewControllerThree.m */; };
@@ -43,6 +44,7 @@
 		7C6642721B0549F1006B3B23 /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
 		7CB48CA51B09502A00477F2B /* CustomCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCell2.h; sourceTree = "<group>"; };
 		7CB48CA61B09502A00477F2B /* CustomCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCell2.m; sourceTree = "<group>"; };
+		7CF00FE01B0A6B3600104570 /* blueEyes.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = blueEyes.jpg; path = "MapApplication_lesson#3/blueEyes.jpg"; sourceTree = "<group>"; };
 		7CF017B91B0804750020A6ED /* Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Object.h; sourceTree = "<group>"; };
 		7CF017BA1B0804760020A6ED /* Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Object.m; sourceTree = "<group>"; };
 		7CF017BC1B0811AE0020A6ED /* ViewControllerTwo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewControllerTwo.h; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 		7CF21BB71B02937800150EAA = {
 			isa = PBXGroup;
 			children = (
+				7CF00FE01B0A6B3600104570 /* blueEyes.jpg */,
 				7CF017C81B089D450020A6ED /* SingleTone.h */,
 				7CF017C91B089D450020A6ED /* SingleTone.m */,
 				7CF017B91B0804750020A6ED /* Object.h */,
@@ -260,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CF21BCF1B02937800150EAA /* Main.storyboard in Resources */,
+				7CF00FE11B0A6B3600104570 /* blueEyes.jpg in Resources */,
 				7CF21BD41B02937800150EAA /* LaunchScreen.xib in Resources */,
 				7CF21BD11B02937800150EAA /* Images.xcassets in Resources */,
 				7C6642581B03FAAC006B3B23 /* RedButtonDefault.png in Resources */,
