@@ -15,7 +15,6 @@ BOOL isCurrentLocation;
 @interface ViewControllerTwo ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @property (nonatomic, strong) NSMutableArray* addressArray;
@@ -187,6 +186,41 @@ BOOL isCurrentLocation;
 }
 
 
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self removeAllAnnotations]; //удаляем аннотацию при переходе на другую ячейку в таблице
+}
+
+// метод срабатывает по выбору табличной ячейки=================
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+   
+    //по индексу ячейки находим координаты в массиве self.arrayAdress и устанавливаем данные координаты по центру карты
+    NSDictionary * dict = [self.addressArray objectAtIndex:indexPath.row];
+    CLLocation * newLocation = [[CLLocation alloc] init];
+    newLocation = [dict objectForKey:@"location"];
+    [self setupMapView:newLocation.coordinate];
+    
+    
+    //по полученным координатам устанавливаем аннотацию:
+    CLGeocoder * geocoder = [[CLGeocoder alloc]init];
+    [geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        CLPlacemark * place = [placemarks objectAtIndex:0];
+    //записывать адрес с индексом в строку NSString
+        NSString * adressString = [[NSString alloc] initWithFormat:@"%@\n%@\nИндекс - %@", [place.addressDictionary valueForKey:@"City"], [place.addressDictionary valueForKey:@"Street"], [place.addressDictionary valueForKey:@"ZIP"]];
+        
+        MKPointAnnotation * annotation = [[MKPointAnnotation alloc]init];
+        annotation.title = adressString;
+        annotation.coordinate = newLocation.coordinate;
+        
+//     добавить аннотацию на карту
+        [self.mapView addAnnotation:annotation];
+    }];
+    
+}
+
+
 - (void) reloadTableView {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
@@ -204,10 +238,6 @@ BOOL isCurrentLocation;
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-   
-    NSLog(@"someString %@", self.someString);
-
-
 
 }
 
@@ -230,13 +260,5 @@ BOOL isCurrentLocation;
 
 }
 
-- (IBAction)addObjectToSecondMap:(id)sender {
-    
-   
-    
-    
-    
-    
-    NSLog(@".Second View !!! makeAddressArray %lu", (unsigned long)self.addressArray);
-}
+
 @end
