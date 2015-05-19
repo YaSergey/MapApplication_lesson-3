@@ -81,11 +81,18 @@ BOOL isCurrentLocation;
         MKAnnotationView * annView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Annotation"];
         
         annView.canShowCallout = NO;
-        annView.image = [UIImage imageNamed:@"RedButtonDefault.png"];
-        // присваиваем маркеру на карте кастомный маркер
         
+        // присваиваем маркеру на карте кастомный маркер ==========
+        //
+        UIImage * markerImage = [UIImage imageNamed:@"marker.png"];
+//        UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
         
-//         вызываем аннотацию
+        //        annView.image = [self makeMarkerImage:markerImage];
+        
+        annView.image = markerImage;
+        
+//        [annView addSubview:marker];
+        
         [annView addSubview:[self getCallOutView:annotation.title]];
         
         return annView;
@@ -95,18 +102,23 @@ BOOL isCurrentLocation;
 
 - (UIView *) getCallOutView: (NSString *) title {
     
-    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 150, 50)];
-    callView.backgroundColor = [UIColor orangeColor];
+    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 190, 80)];
+    callView.backgroundColor = [UIColor darkGrayColor];
     
     callView.tag = 1000;
     callView.alpha = 0.8;
     callView.layer.borderWidth = 0.5; // оконтовка callView
-    //    callView.layer.shadowOpacity = [UIColor lightGrayColor];
     callView.layer.cornerRadius = 10.0;
     
+    // добавление тени
+    callView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:1.0].CGColor;
+    callView.layer.shadowOffset = CGSizeMake(0.0, 0.0);
+    callView.layer.shadowRadius = 8.5f;
+    callView.layer.shadowOpacity = 20.5f;
+    callView.layer.masksToBounds = NO;
     
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(1, 1, 150, 90)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(46, 1, 140, 45)];
     
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
@@ -116,6 +128,21 @@ BOOL isCurrentLocation;
     label.text = title;
     
     [callView addSubview:label];
+    
+    
+    // добавление аватарки на аннотацию =============
+    
+    UIImage * avatarImage = [UIImage imageNamed:@"blueEyes.jpg"];
+    UIImageView * imageAnnotation = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
+    
+    imageAnnotation.image = avatarImage;
+    
+    // скругление аватарки ==========================
+    imageAnnotation.layer.cornerRadius = imageAnnotation.frame.size.width / 2;
+    imageAnnotation.clipsToBounds = YES;
+    imageAnnotation.layer.shadowOpacity = 20.5f;
+    
+    [callView addSubview:imageAnnotation];
     
     return callView;
 }
@@ -199,19 +226,20 @@ BOOL isCurrentLocation;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
    
-    //по индексу ячейки находим координаты в массиве self.arrayAdress и устанавливаем данные координаты по центру карты
+//по индексу ячейки находим координаты в массиве self.arrayAdress и устанавливаем данные координаты по центру карты
     NSDictionary * dict = [self.addressArray objectAtIndex:indexPath.row];
     CLLocation * newLocation = [[CLLocation alloc] init];
     newLocation = [dict objectForKey:@"location"];
     [self setupMapView:newLocation.coordinate];
     
     
-    //по полученным координатам устанавливаем аннотацию:
+//по полученным координатам устанавливаем аннотацию:
     CLGeocoder * geocoder = [[CLGeocoder alloc]init];
     [geocoder reverseGeocodeLocation:newLocation completionHandler:^(NSArray *placemarks, NSError *error) {
         CLPlacemark * place = [placemarks objectAtIndex:0];
-    //записывать адрес с индексом в строку NSString
-        NSString * adressString = [[NSString alloc] initWithFormat:@"%@\n%@\nИндекс - %@", [place.addressDictionary valueForKey:@"City"], [place.addressDictionary valueForKey:@"Street"], [place.addressDictionary valueForKey:@"ZIP"]];
+//записывать адрес с индексом в строку NSString
+    
+    NSString * adressString = [[NSString alloc] initWithFormat:@"%@\n%@\nИндекс - %@", [place.addressDictionary valueForKey:@"City"], [place.addressDictionary valueForKey:@"Street"], [place.addressDictionary valueForKey:@"ZIP"]];
         
         MKPointAnnotation * annotation = [[MKPointAnnotation alloc]init];
         annotation.title = adressString;

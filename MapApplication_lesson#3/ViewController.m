@@ -54,7 +54,6 @@ BOOL isCurrentLocation;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-
   
     isCurrentLocation = NO;
     
@@ -71,6 +70,8 @@ BOOL isCurrentLocation;
     if (!isFirstLunch) {
         [self firstLunch];
     }
+    
+    
 }
 
 
@@ -96,14 +97,25 @@ BOOL isCurrentLocation;
 }
 
 
+- (void) setupMapView2: (CLLocationCoordinate2D) coord {
     
-//- (void) makeMarkerImage: (UIImage *) markerImage {
+    // карта из общего вида опустится когда до пользователя будет 500м
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, 500, 500);
+    
+    [self.mapView setRegion:region animated:YES];
+    
+}
+
+
+    
+//- (void) makeMarkerImage: (UIImageView *) markerImage {
 //    UIImage * image = [UIImage imageNamed:@"marker.png"];
 //    UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
 //    
 //    marker.image = image;
-//
-//}
+//    }
+
+
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     
@@ -115,13 +127,15 @@ BOOL isCurrentLocation;
 // присваиваем маркеру на карте кастомный маркер ==========
 //        
         UIImage * markerImage = [UIImage imageNamed:@"marker.png"];
-        UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
+//        UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
         
 //        annView.image = [self makeMarkerImage:markerImage];
         
-        marker.image = markerImage;
+//        marker.image = markerImage;
         
-        [annView addSubview:marker];
+        annView.image = markerImage;
+        
+//        [annView addSubview:marker];
         
         [annView addSubview:[self getCallOutView:annotation.title]];
        
@@ -134,11 +148,12 @@ BOOL isCurrentLocation;
 
 - (UIView *) getCallOutView: (NSString *) title {
 
-    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 190, 80)];
+    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 195, 80)];
     callView.backgroundColor = [UIColor darkGrayColor];
     
     callView.tag = 1000;
-    callView.alpha = 0.8;
+    callView.alpha = 0.0; // аннотация прозрачаная при перовой установке маркера
+    
     callView.layer.borderWidth = 0.5; // оконтовка callView
     callView.layer.cornerRadius = 5.0;
     
@@ -151,7 +166,7 @@ BOOL isCurrentLocation;
     callView.layer.masksToBounds = NO;
 
     
-    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(46, 1, 140, 45)];
+    UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(48, 3, 140, 45)];
     
     label.numberOfLines = 0;
     label.lineBreakMode = NSLineBreakByWordWrapping;
@@ -161,7 +176,18 @@ BOOL isCurrentLocation;
     label.text = title;
     
     [callView addSubview:label];
+   
+// добавление конопки на аннотацию ============
+    UIButton * annotationButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 55, 180, 20)];
     
+    annotationButton.layer.cornerRadius = annotationButton.frame.size.height/4;
+    annotationButton.clipsToBounds = YES;
+    annotationButton.backgroundColor = [UIColor darkGrayColor];
+    annotationButton.layer.borderWidth = 0.5;
+    annotationButton.titleLabel.text = @"Сохранить";
+    annotationButton.titleLabel.textColor = [UIColor whiteColor];
+
+    [callView addSubview:annotationButton];
     
 // добавление аватарки на аннотацию =============
     
@@ -183,11 +209,15 @@ BOOL isCurrentLocation;
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     
-    // метод анимации при нажатии на вью - показывает (меняем альфу до 1)
+//    [self setupMapView2:MKAnnotationView.coordinate];
+
+    
+// метод анимации при нажатии на вью - показывает (меняем альфу до 1)
     if (! [view.annotation isKindOfClass:MKUserLocation.class]) {
         for (UIView * subView in view.subviews) {
             if (subView.tag == 1000) {
                 subView.alpha = 1.0;
+                
             }
         }
     }
@@ -195,10 +225,13 @@ BOOL isCurrentLocation;
 }
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
     
+
 // метод анимации при нажатии на вью - скрываем (меняем альфу до 0)
         for (UIView * subView in view.subviews) {
             if (subView.tag == 1000) {
                 subView.alpha = 0.0;
+                
+           
             }
         }
     }
@@ -240,12 +273,15 @@ BOOL isCurrentLocation;
             
 //  NSLog(@"place %@", place.addressDictionary); // и выводим их в консоль
             
+//            location
             
         NSString * addressString = [NSString stringWithFormat:
-             @"Город - %@\nУлица - %@\nИндекс - %@",
+             @"Город - %@\nУлица - %@\nИндекс - %@\nGPS - %@" ,
         [place.addressDictionary valueForKey:@"City"],
         [place.addressDictionary valueForKey:@"Street"],
-        [place.addressDictionary valueForKey:@"ZIP"]];
+        [place.addressDictionary valueForKey:@"ZIP"],
+        [place.addressDictionary valueForKey:@"location"]];
+
             
             NSLog(@"addressString %@", addressString);
             
@@ -269,7 +305,8 @@ BOOL isCurrentLocation;
             NSMutableDictionary * addressDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
             [place.addressDictionary valueForKey:@"City"], @"City",
             [place.addressDictionary valueForKey:@"Street"], @"Street",
-            [place.addressDictionary valueForKey:@"ZIP"], @"ZIP",tapLocation, @"location", nil];
+            [place.addressDictionary valueForKey:@"ZIP"], @"ZIP",
+                                                 tapLocation, @"location", nil];
             
             [self.addressArray addObject: addressDict];
         
@@ -315,6 +352,7 @@ BOOL isCurrentLocation;
     [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"Street"];
     cell.zipCodeLabel.text =
     [[self.addressArray objectAtIndex:indexPath.row]objectForKey:@"ZIP"];
+  
     
     return cell;
     
