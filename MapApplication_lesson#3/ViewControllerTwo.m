@@ -23,8 +23,6 @@ BOOL isCurrentLocation;
 
 
 
-- (IBAction)addObjectToSecondMap:(id)sender;
-
 @end
 
 @implementation ViewControllerTwo
@@ -72,7 +70,9 @@ BOOL isCurrentLocation;
     
     [self.mapView setRegion:region animated:YES];
     
+    
 }
+
 
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
@@ -84,7 +84,10 @@ BOOL isCurrentLocation;
         annView.image = [UIImage imageNamed:@"RedButtonDefault.png"];
         // присваиваем маркеру на карте кастомный маркер
         
+        
+//         вызываем аннотацию
         [annView addSubview:[self getCallOutView:annotation.title]];
+        
         return annView;
     }
     return nil;

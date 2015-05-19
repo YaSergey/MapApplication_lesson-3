@@ -27,9 +27,6 @@ BOOL isCurrentLocation;
 @property (nonatomic, strong) CLLocationManager * locationManager;
 @property (nonatomic, strong) NSMutableArray* addressArray;
 
-//@property (nonatomic, weak) UIView *imageAnnotation;
-//@property (nonatomic, weak) UIImageView *avatarImage;
-
 
 - (IBAction)handleLongPress:(UILongPressGestureRecognizer *)sender;
 - (IBAction)clearTableView:(id)sender;
@@ -57,9 +54,6 @@ BOOL isCurrentLocation;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    SingleTone *addressArrayVar = [SingleTone sharedSingleTone];
-//
-//    [addressArrayVar makeAddressArray];
 
   
     isCurrentLocation = NO;
@@ -102,33 +96,60 @@ BOOL isCurrentLocation;
 }
 
 
+    
+//- (void) makeMarkerImage: (UIImage *) markerImage {
+//    UIImage * image = [UIImage imageNamed:@"marker.png"];
+//    UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
+//    
+//    marker.image = image;
+//
+//}
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     
     if (![annotation isKindOfClass:MKUserLocation.class]) {
         MKAnnotationView * annView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"Annotation"];
         
         annView.canShowCallout = NO;
-        annView.image = [UIImage imageNamed:@"RedButtonDefault.png"];
-        // присваиваем маркеру на карте кастомный маркер
+        
+// присваиваем маркеру на карте кастомный маркер ==========
+//        
+        UIImage * markerImage = [UIImage imageNamed:@"marker.png"];
+        UIImageView * marker = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35, 55)];
+        
+//        annView.image = [self makeMarkerImage:markerImage];
+        
+        marker.image = markerImage;
+        
+        [annView addSubview:marker];
         
         [annView addSubview:[self getCallOutView:annotation.title]];
+       
         return annView;
     }
     return nil;
 }
 
+// добавление аннотации =====================================
+
 - (UIView *) getCallOutView: (NSString *) title {
 
-    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 180, 50)];
-    callView.backgroundColor = [UIColor orangeColor];
+    UIView * callView = [[UIView alloc] initWithFrame:CGRectMake(-100,-105, 190, 80)];
+    callView.backgroundColor = [UIColor darkGrayColor];
     
     callView.tag = 1000;
     callView.alpha = 0.8;
     callView.layer.borderWidth = 0.5; // оконтовка callView
-//    callView.layer.shadowOpacity = [UIColor lightGrayColor];
-    callView.layer.cornerRadius = 25.0;
+    callView.layer.cornerRadius = 5.0;
     
     
+    // добавление тени
+    callView.layer.shadowColor = [UIColor colorWithWhite:0.0 alpha:1.0].CGColor;
+    callView.layer.shadowOffset = CGSizeMake(0.0, 0.0);
+    callView.layer.shadowRadius = 8.5f;
+    callView.layer.shadowOpacity = 20.5f;
+    callView.layer.masksToBounds = NO;
+
     
     UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(46, 1, 140, 45)];
     
@@ -142,29 +163,26 @@ BOOL isCurrentLocation;
     [callView addSubview:label];
     
     
-    // добавление аватарки на аннотацию =============
-    
+// добавление аватарки на аннотацию =============
     
     UIImage * avatarImage = [UIImage imageNamed:@"blueEyes.jpg"];
-
-
     UIImageView * imageAnnotation = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
     
     imageAnnotation.image = avatarImage;
     
-    // скругление аватарки
+// скругление аватарки ==========================
     imageAnnotation.layer.cornerRadius = imageAnnotation.frame.size.width / 2;
     imageAnnotation.clipsToBounds = YES;
-    
+    imageAnnotation.layer.shadowOpacity = 20.5f;
+
     [callView addSubview:imageAnnotation];
-    
-    
 
     return callView;
 }
 
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    
     // метод анимации при нажатии на вью - показывает (меняем альфу до 1)
     if (! [view.annotation isKindOfClass:MKUserLocation.class]) {
         for (UIView * subView in view.subviews) {
@@ -177,7 +195,7 @@ BOOL isCurrentLocation;
 }
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
     
-    // метод анимации при нажатии на вью - скрываем (меняем альфу до 0)
+// метод анимации при нажатии на вью - скрываем (меняем альфу до 0)
         for (UIView * subView in view.subviews) {
             if (subView.tag == 1000) {
                 subView.alpha = 0.0;
@@ -234,9 +252,9 @@ BOOL isCurrentLocation;
 //         NSLog(@"onlyCity %@", [NSString stringWithFormat: [place.addressDictionary valueForKey:@"Street"]]);
 // вызываем сообщение на экране
 
-            UIAlertView * alert =   [[UIAlertView alloc] initWithTitle: @"Address" message:addressString delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
+//            UIAlertView * alert =   [[UIAlertView alloc] initWithTitle: @"Address" message:addressString delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil, nil];
 
-            [alert show];
+//            [alert show];
             
             MKPointAnnotation * annotation = [[MKPointAnnotation alloc] init];
             annotation.title = addressString;
